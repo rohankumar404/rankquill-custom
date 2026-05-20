@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\InquiryController;
+use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -15,8 +17,6 @@ use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\PagePreviewController;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Admin\NewsletterController;
 
 Route::get('/dashboard', DashboardController::class)->name('dashboard');
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
@@ -41,3 +41,13 @@ Route::resource('inquiries', InquiryController::class)->only(['index', 'update',
 
 Route::get('/newsletter/export', [NewsletterController::class, 'export'])->name('newsletter.export');
 Route::resource('newsletter', NewsletterController::class)->only(['index', 'destroy']);
+
+// Media Manager routes
+Route::get('/media', [MediaController::class, 'index'])->name('media.index');
+Route::post('/media/upload', [MediaController::class, 'upload'])->name('media.upload');
+Route::post('/media/folders', [MediaController::class, 'storeFolder'])->name('media.folders.store');
+Route::put('/media/folders/{folder}', [MediaController::class, 'renameFolder'])->name('media.folders.rename');
+Route::delete('/media/folders/{folder}', [MediaController::class, 'destroyFolder'])->name('media.folders.destroy');
+Route::put('/media/files/{file}', [MediaController::class, 'updateFile'])->name('media.files.update');
+Route::delete('/media/files/{file}', [MediaController::class, 'destroyFile'])->name('media.files.destroy');
+Route::post('/media/move', [MediaController::class, 'moveItems'])->name('media.items.move');

@@ -3,7 +3,15 @@ useLayout: true;
 import { ref, watch, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AdminLayout from '../../Layouts/AdminLayout.vue';
-import debounce from 'lodash/debounce';
+
+// Custom lightweight debounce helper to avoid lodash dependency
+const debounce = (fn, delay) => {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn(...args), delay);
+    };
+};
 
 const props = defineProps({
     subscribers: Object,
