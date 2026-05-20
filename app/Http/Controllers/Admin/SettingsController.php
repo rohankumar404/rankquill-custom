@@ -32,6 +32,7 @@ class SettingsController extends Controller
                 'theme' => $this->settingsService->group('theme'),
                 'seo' => $this->settingsService->group('seo'),
                 'leads' => $this->settingsService->group('leads'),
+                'newsletter' => $this->settingsService->group('newsletter'),
             ],
             'smtp' => SmtpSetting::first() ?? new SmtpSetting,
             'scripts' => Script::all(),
@@ -71,6 +72,14 @@ class SettingsController extends Controller
             'leads.recaptcha_enabled' => 'required|in:true,false,1,0',
             'leads.recaptcha_site_key' => 'nullable|string',
             'leads.recaptcha_secret_key' => 'nullable|string',
+
+            // Newsletter Integrations Settings
+            'newsletter.mailchimp_enabled' => 'required|in:true,false,1,0',
+            'newsletter.mailchimp_api_key' => 'nullable|string',
+            'newsletter.mailchimp_list_id' => 'nullable|string',
+            'newsletter.brevo_enabled' => 'required|in:true,false,1,0',
+            'newsletter.brevo_api_key' => 'nullable|string',
+            'newsletter.brevo_list_id' => 'nullable|string',
 
             // SMTP Settings
             'smtp.host' => 'required|string',
@@ -131,6 +140,11 @@ class SettingsController extends Controller
         // 4.5. Lead Settings update
         if ($request->has('leads')) {
             $this->settingsService->setMany($request->input('leads'), 'leads');
+        }
+
+        // 4.6. Newsletter Settings update
+        if ($request->has('newsletter')) {
+            $this->settingsService->setMany($request->input('newsletter'), 'newsletter');
         }
 
         // 5. SMTP Settings update

@@ -121,6 +121,36 @@ class SettingsSeeder extends Seeder
                 'value' => null,
                 'group' => 'leads',
             ],
+            [
+                'key' => 'mailchimp_enabled',
+                'value' => 'false',
+                'group' => 'newsletter',
+            ],
+            [
+                'key' => 'mailchimp_api_key',
+                'value' => null,
+                'group' => 'newsletter',
+            ],
+            [
+                'key' => 'mailchimp_list_id',
+                'value' => null,
+                'group' => 'newsletter',
+            ],
+            [
+                'key' => 'brevo_enabled',
+                'value' => 'false',
+                'group' => 'newsletter',
+            ],
+            [
+                'key' => 'brevo_api_key',
+                'value' => null,
+                'group' => 'newsletter',
+            ],
+            [
+                'key' => 'brevo_list_id',
+                'value' => null,
+                'group' => 'newsletter',
+            ],
         ];
 
         foreach ($settings as $s) {

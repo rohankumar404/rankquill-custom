@@ -37,3 +37,9 @@ Route::get('/portfolio/{slug}', [PublicPortfolioController::class, 'show'])->nam
 use App\Http\Controllers\PublicInquiryController;
 
 Route::post('/contact', [PublicInquiryController::class, 'store'])->name('contact.store');
+
+// Public Newsletter System
+use App\Http\Controllers\PublicNewsletterController;
+
+Route::post('/newsletter/subscribe', [PublicNewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::get('/newsletter/unsubscribe', [PublicNewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');

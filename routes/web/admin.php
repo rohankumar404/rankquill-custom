@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\PagePreviewController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Admin\NewsletterController;
+
 Route::get('/dashboard', DashboardController::class)->name('dashboard');
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
 Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
@@ -36,3 +38,6 @@ Route::resource('portfolios', PortfolioController::class);
 
 Route::get('/inquiries/export', [InquiryController::class, 'exportCsv'])->name('inquiries.export');
 Route::resource('inquiries', InquiryController::class)->only(['index', 'update', 'destroy']);
+
+Route::get('/newsletter/export', [NewsletterController::class, 'export'])->name('newsletter.export');
+Route::resource('newsletter', NewsletterController::class)->only(['index', 'destroy']);
