@@ -173,10 +173,13 @@ class ServicesSeeder extends Seeder
             $seo = $servData['seo'];
             unset($servData['seo']);
 
-            $service = Service::create($servData);
+            $service = Service::where('slug', $servData['slug'])->first();
+            if (! $service) {
+                $service = Service::create($servData);
 
-            if ($seo) {
-                $service->updateSeo($seo);
+                if ($seo) {
+                    $service->updateSeo($seo);
+                }
             }
         }
     }

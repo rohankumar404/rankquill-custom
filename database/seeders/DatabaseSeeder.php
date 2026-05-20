@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SettingsSeeder::class,
             ServicesSeeder::class,
+            PortfoliosSeeder::class,
         ]);
     }
 }

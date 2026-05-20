@@ -26,3 +26,9 @@ use App\Http\Controllers\PublicServiceController;
 
 Route::get('/services', [PublicServiceController::class, 'index'])->name('services.index');
 Route::get('/services/{slug}', [PublicServiceController::class, 'show'])->name('services.show');
+
+// Public Portfolio Routing System
+use App\Http\Controllers\PublicPortfolioController;
+
+Route::get('/portfolio', [PublicPortfolioController::class, 'index'])->name('portfolio.index');
+Route::get('/portfolio/{slug}', [PublicPortfolioController::class, 'show'])->name('portfolio.show');
