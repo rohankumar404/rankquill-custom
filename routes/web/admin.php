@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -32,3 +33,6 @@ Route::resource('tags', TagController::class);
 Route::resource('blogs', BlogController::class);
 Route::resource('services', ServiceController::class);
 Route::resource('portfolios', PortfolioController::class);
+
+Route::get('/inquiries/export', [InquiryController::class, 'exportCsv'])->name('inquiries.export');
+Route::resource('inquiries', InquiryController::class)->only(['index', 'update', 'destroy']);

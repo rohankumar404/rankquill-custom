@@ -32,3 +32,8 @@ use App\Http\Controllers\PublicPortfolioController;
 
 Route::get('/portfolio', [PublicPortfolioController::class, 'index'])->name('portfolio.index');
 Route::get('/portfolio/{slug}', [PublicPortfolioController::class, 'show'])->name('portfolio.show');
+
+// Lead Capture System
+use App\Http\Controllers\PublicInquiryController;
+
+Route::post('/contact', [PublicInquiryController::class, 'store'])->name('contact.store');

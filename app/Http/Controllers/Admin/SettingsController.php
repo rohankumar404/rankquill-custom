@@ -31,6 +31,7 @@ class SettingsController extends Controller
                 'contact' => $this->settingsService->group('contact'),
                 'theme' => $this->settingsService->group('theme'),
                 'seo' => $this->settingsService->group('seo'),
+                'leads' => $this->settingsService->group('leads'),
             ],
             'smtp' => SmtpSetting::first() ?? new SmtpSetting,
             'scripts' => Script::all(),
@@ -64,6 +65,12 @@ class SettingsController extends Controller
             'seo.default_seo_description' => 'required|string|max:1000',
             'seo.default_seo_keywords' => 'nullable|string|max:1000',
             'seo.default_seo_robots' => 'nullable|string|max:255',
+
+            // Lead / reCAPTCHA Settings
+            'leads.lead_notification_emails' => 'required|string',
+            'leads.recaptcha_enabled' => 'required|in:true,false,1,0',
+            'leads.recaptcha_site_key' => 'nullable|string',
+            'leads.recaptcha_secret_key' => 'nullable|string',
 
             // SMTP Settings
             'smtp.host' => 'required|string',
@@ -119,6 +126,11 @@ class SettingsController extends Controller
         // 4. SEO Settings update
         if ($request->has('seo')) {
             $this->settingsService->setMany($request->input('seo'), 'seo');
+        }
+
+        // 4.5. Lead Settings update
+        if ($request->has('leads')) {
+            $this->settingsService->setMany($request->input('leads'), 'leads');
         }
 
         // 5. SMTP Settings update

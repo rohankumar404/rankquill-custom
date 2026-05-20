@@ -21,7 +21,8 @@ const tabs = [
     { id: 'seo', name: 'Default SEO', icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
     { id: 'scripts', name: 'Header/Body Scripts', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
     { id: 'socials', name: 'Social Media', icon: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1' },
-    { id: 'smtp', name: 'Mail Configuration', icon: 'M3 19v-8.93a2 2 0 01.89-1.664l8-5.333a2 2 0 012.22 0l8 5.333A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5m0 0l-2.25-1.5a2 2 0 00-2.22 0l-2.25 1.5m4.5 0v3m-2.25-3v3m4.5-3v3' }
+    { id: 'smtp', name: 'Mail Configuration', icon: 'M3 19v-8.93a2 2 0 01.89-1.664l8-5.333a2 2 0 012.22 0l8 5.333A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5m0 0l-2.25-1.5a2 2 0 00-2.22 0l-2.25 1.5m4.5 0v3m-2.25-3v3m4.5-3v3' },
+    { id: 'leads', name: 'Lead Settings', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' }
 ];
 
 // Initialize Inertia form
@@ -63,6 +64,12 @@ const form = useForm({
     },
     scripts: props.scripts ? props.scripts.map(s => ({ ...s })) : [],
     social_links: props.social_links ? props.social_links.map(l => ({ ...l, is_active: l.is_active === 1 || l.is_active === true })) : [],
+    leads: {
+        lead_notification_emails: props.settings.leads?.lead_notification_emails || 'hello@rankquill.com,leads@rankquill.com',
+        recaptcha_enabled: props.settings.leads?.recaptcha_enabled === 'true' || props.settings.leads?.recaptcha_enabled === '1' || props.settings.leads?.recaptcha_enabled === true,
+        recaptcha_site_key: props.settings.leads?.recaptcha_site_key || '',
+        recaptcha_secret_key: props.settings.leads?.recaptcha_secret_key || '',
+    },
 });
 
 // Logo file handling
@@ -107,10 +114,16 @@ const removeSocialLink = (index) => {
 
 // Submit main settings form
 const submit = () => {
+    const originalValue = form.leads.recaptcha_enabled;
+    form.leads.recaptcha_enabled = form.leads.recaptcha_enabled ? 'true' : 'false';
+
     form.post(route('admin.settings.update'), {
         preserveScroll: true,
         onSuccess: () => {
-            // Success flash notification handled by layout automatically
+            form.leads.recaptcha_enabled = originalValue;
+        },
+        onError: () => {
+            form.leads.recaptcha_enabled = originalValue;
         }
     });
 };
@@ -834,6 +847,87 @@ const testSmtpConnection = async () => {
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
                                 <span class="leading-relaxed">{{ testResult.message }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 8: LEADS & SPAM PROTECTION -->
+                    <div v-show="activeTab === 'leads'" class="space-y-6">
+                        <div class="border-b border-slate-800 pb-4 mb-6">
+                            <h3 class="text-lg font-bold text-slate-100">Leads & Notification Routing</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Control notification emails, honeypots, and Google reCAPTCHA configurations.</p>
+                        </div>
+
+                        <!-- Notification Recipients -->
+                        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl space-y-4">
+                            <div>
+                                <label for="lead_notification_emails" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Notification Alert Emails (Comma Separated)</label>
+                                <input
+                                    v-model="form.leads.lead_notification_emails"
+                                    type="text"
+                                    id="lead_notification_emails"
+                                    placeholder="hello@rankquill.com, notifications@rankquill.com"
+                                    class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-100 text-sm transition-colors"
+                                    required
+                                />
+                                <p class="text-[10px] text-slate-500 mt-1">Inquiry details will be relayed to all valid email addresses defined in this list.</p>
+                                <span v-if="form.errors['leads.lead_notification_emails']" class="text-xs text-rose-500 mt-1 block">{{ form.errors['leads.lead_notification_emails'] }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Spam Protection & reCAPTCHA -->
+                        <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl space-y-6">
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-200">Google reCAPTCHA Integration</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">Protect lead submission endpoints against automated spam scripts.</p>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-slate-950 border border-slate-850 rounded-xl">
+                                <div>
+                                    <span class="text-xs font-semibold text-slate-350 block">Enable reCAPTCHA v2</span>
+                                    <span class="text-[10px] text-slate-500">Requires recaptcha field verification on frontend forms if active.</span>
+                                </div>
+                                <button
+                                    type="button"
+                                    @click="form.leads.recaptcha_enabled = !form.leads.recaptcha_enabled"
+                                    :class="[
+                                        form.leads.recaptcha_enabled ? 'bg-indigo-600' : 'bg-slate-700',
+                                        'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none'
+                                    ]"
+                                >
+                                    <span
+                                        :class="[
+                                            form.leads.recaptcha_enabled ? 'translate-x-5' : 'translate-x-0',
+                                            'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+                                        ]"
+                                    />
+                                </button>
+                            </div>
+
+                            <div v-if="form.leads.recaptcha_enabled" class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                <div>
+                                    <label for="recaptcha_site_key" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">reCAPTCHA Site Key</label>
+                                    <input
+                                        v-model="form.leads.recaptcha_site_key"
+                                        type="text"
+                                        id="recaptcha_site_key"
+                                        placeholder="6Ld..."
+                                        class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-100 text-xs transition-colors"
+                                    />
+                                    <span v-if="form.errors['leads.recaptcha_site_key']" class="text-xs text-rose-500 mt-1 block">{{ form.errors['leads.recaptcha_site_key'] }}</span>
+                                </div>
+
+                                <div>
+                                    <label for="recaptcha_secret_key" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">reCAPTCHA Secret Key</label>
+                                    <input
+                                        v-model="form.leads.recaptcha_secret_key"
+                                        type="password"
+                                        id="recaptcha_secret_key"
+                                        placeholder="••••••••••••••••••••"
+                                        class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-100 text-xs transition-colors"
+                                    />
+                                    <span v-if="form.errors['leads.recaptcha_secret_key']" class="text-xs text-rose-500 mt-1 block">{{ form.errors['leads.recaptcha_secret_key'] }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>

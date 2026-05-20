@@ -101,6 +101,26 @@ class SettingsSeeder extends Seeder
                 'value' => 'index, follow',
                 'group' => 'seo',
             ],
+            [
+                'key' => 'lead_notification_emails',
+                'value' => 'hello@rankquill.com,leads@rankquill.com',
+                'group' => 'leads',
+            ],
+            [
+                'key' => 'recaptcha_enabled',
+                'value' => 'false',
+                'group' => 'leads',
+            ],
+            [
+                'key' => 'recaptcha_site_key',
+                'value' => null,
+                'group' => 'leads',
+            ],
+            [
+                'key' => 'recaptcha_secret_key',
+                'value' => null,
+                'group' => 'leads',
+            ],
         ];
 
         foreach ($settings as $s) {
