@@ -4,11 +4,20 @@ use App\Http\Controllers\PagePreviewController;
 use App\Http\Controllers\PublicBlogController;
 use App\Http\Controllers\RssFeedController;
 use App\Http\Controllers\SeoController;
+use App\Models\Blog;
+use App\Models\Portfolio;
+use App\Models\Service;
+use App\Models\Testimonial;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    return Inertia::render('Welcome', [
+        'services' => Service::active()->orderBy('id')->take(6)->get(),
+        'portfolios' => Portfolio::published()->with('categories')->latest()->take(3)->get(),
+        'testimonials' => Testimonial::latest()->take(6)->get(),
+        'blogs' => Blog::published()->with('category')->latest()->take(3)->get(),
+    ]);
 });
 
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap']);
