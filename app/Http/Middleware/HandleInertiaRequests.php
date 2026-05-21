@@ -62,6 +62,7 @@ class HandleInertiaRequests extends Middleware
                     'id' => $request->user()->id,
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
+                    'two_factor_enabled' => !empty($request->user()->google2fa_secret),
                 ] : null,
             ],
             'flash' => [

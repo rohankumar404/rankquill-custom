@@ -60,6 +60,11 @@ const tabs = [
         name: "Newsletter API",
         icon: "M3 19v-8.93a2 2 0 01.89-1.664l8-5.333a2 2 0 012.22 0l8 5.333A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5m0 0l-2.25-1.5a2 2 0 00-2.22 0l-2.25 1.5",
     },
+    {
+        id: "security",
+        name: "Security & 2FA",
+        icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
+    },
 ];
 
 // Initialize Inertia form
@@ -233,6 +238,92 @@ const testSmtpConnection = async () => {
         testResult.value = { success: false, message: msg };
     } finally {
         isTestingSmtp.value = false;
+    }
+};
+
+// Security & 2FA State & Methods
+const passwordForm = useForm({
+    current_password: "",
+    password: "",
+    password_confirmation: "",
+});
+
+const changePassword = () => {
+    passwordForm.post(route("admin.settings.change-password"), {
+        preserveScroll: true,
+        onSuccess: () => passwordForm.reset(),
+    });
+};
+
+const twoFactorSetupData = ref(null);
+const twoFactorCode = ref("");
+const twoFactorDisablePassword = ref("");
+const twoFactorDisableCode = ref("");
+const showDisableModal = ref(false);
+const isEnabling2fa = ref(false);
+const isDisabling2fa = ref(false);
+const isGenerating2fa = ref(false);
+const twoFactorError = ref("");
+const twoFactorSuccess = ref("");
+
+const initTwoFactorSetup = async () => {
+    isGenerating2fa.value = true;
+    twoFactorError.value = "";
+    twoFactorSuccess.value = "";
+    try {
+        const response = await axios.post(route("admin.settings.2fa.setup"));
+        twoFactorSetupData.value = response.data;
+    } catch (e) {
+        twoFactorError.value = e.response?.data?.error || "Failed to initialize 2FA setup.";
+    } finally {
+        isGenerating2fa.value = false;
+    }
+};
+
+const confirmEnableTwoFactor = async () => {
+    if (!twoFactorCode.value) {
+        twoFactorError.value = "Please enter the 6-digit verification code.";
+        return;
+    }
+    isEnabling2fa.value = true;
+    twoFactorError.value = "";
+    try {
+        const response = await axios.post(route("admin.settings.2fa.enable"), {
+            secret: twoFactorSetupData.value.secret,
+            code: twoFactorCode.value,
+        });
+        twoFactorSuccess.value = response.data.message;
+        twoFactorSetupData.value = null;
+        twoFactorCode.value = "";
+        window.location.reload();
+    } catch (e) {
+        twoFactorError.value = e.response?.data?.error || "Failed to verify 2FA code.";
+    } finally {
+        isEnabling2fa.value = false;
+    }
+};
+
+const disableTwoFactor = async () => {
+    if (!twoFactorDisablePassword.value || !twoFactorDisableCode.value) {
+        twoFactorError.value = "Please enter your current password and 2FA code.";
+        return;
+    }
+    isDisabling2fa.value = true;
+    twoFactorError.value = "";
+    try {
+        const response = await axios.post(route("admin.settings.2fa.disable"), {
+            password: twoFactorDisablePassword.value,
+            code: twoFactorDisableCode.value,
+        });
+        twoFactorSuccess.value = response.data.message;
+        twoFactorDisablePassword.value = "";
+        twoFactorDisableCode.value = "";
+        showDisableModal.value = false;
+        window.location.reload();
+    } catch (e) {
+        twoFactorError.value = e.response?.data?.error || "Failed to deactivate 2FA.";
+    } finally {
+        isDisabling2fa.value = false;
     }
 };
 </script>
@@ -1775,8 +1866,241 @@ const testSmtpConnection = async () => {
                         </div>
                     </div>
 
+                    <!-- TAB 7: SECURITY & 2FA -->
+                    <div v-show="activeTab === 'security'" class="space-y-8">
+                        <div class="border-b border-slate-800 pb-4">
+                            <h3 class="text-lg font-bold text-slate-100">
+                                Security & Two-Factor Authentication
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">
+                                Secure your account by updating your credentials and setting up secondary authentication.
+                            </p>
+                        </div>
+
+                        <!-- Messages -->
+                        <div v-if="twoFactorSuccess" class="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs rounded-xl">
+                            {{ twoFactorSuccess }}
+                        </div>
+                        <div v-if="twoFactorError" class="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-xl">
+                            {{ twoFactorError }}
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <!-- Update Password Form -->
+                            <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl space-y-6">
+                                <h4 class="text-sm font-bold text-slate-200">
+                                    Update Password
+                                </h4>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="current_password" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Current Password</label>
+                                        <input
+                                            v-model="passwordForm.current_password"
+                                            type="password"
+                                            id="current_password"
+                                            class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-100 text-xs transition-colors"
+                                            required
+                                        />
+                                        <span v-if="passwordForm.errors.current_password" class="text-xs text-rose-500 mt-1 block">
+                                            {{ passwordForm.errors.current_password }}
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <label for="new_password" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">New Password</label>
+                                        <input
+                                            v-model="passwordForm.password"
+                                            type="password"
+                                            id="new_password"
+                                            class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-100 text-xs transition-colors"
+                                            required
+                                        />
+                                        <span v-if="passwordForm.errors.password" class="text-xs text-rose-500 mt-1 block">
+                                            {{ passwordForm.errors.password }}
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <label for="new_password_confirmation" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Confirm New Password</label>
+                                        <input
+                                            v-model="passwordForm.password_confirmation"
+                                            type="password"
+                                            id="new_password_confirmation"
+                                            class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-100 text-xs transition-colors"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div class="pt-2">
+                                        <button
+                                            type="button"
+                                            @click="changePassword"
+                                            :disabled="passwordForm.processing"
+                                            class="px-5 py-3 text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl shadow-lg transition-all"
+                                        >
+                                            <span v-if="passwordForm.processing">Updating...</span>
+                                            <span v-else>Update Password</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Two-Factor Authentication Control -->
+                            <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl space-y-6">
+                                <h4 class="text-sm font-bold text-slate-200">
+                                    Two-Factor Authentication
+                                </h4>
+
+                                <!-- Status Enabled -->
+                                <div v-if="$page.props.auth.user.two_factor_enabled" class="space-y-4">
+                                    <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl flex items-start space-x-3">
+                                        <svg class="h-5 w-5 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                        </svg>
+                                        <div>
+                                            <p class="text-xs font-bold">2FA is enabled and active</p>
+                                            <p class="text-[10px] text-emerald-500/70 mt-0.5">Your account is protected with multi-factor security.</p>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="!showDisableModal">
+                                        <button
+                                            type="button"
+                                            @click="showDisableModal = true"
+                                            class="px-5 py-3 text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-lg transition-all"
+                                        >
+                                            Deactivate 2FA
+                                        </button>
+                                    </div>
+
+                                    <!-- Deactivation form -->
+                                    <div v-else class="space-y-4 border border-rose-500/20 p-4 rounded-xl bg-rose-500/5">
+                                        <p class="text-xs text-rose-400 font-semibold">Confirm 2FA Deactivation</p>
+                                        
+                                        <div>
+                                            <label for="disable_password" class="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Confirm Password</label>
+                                            <input
+                                                v-model="twoFactorDisablePassword"
+                                                type="password"
+                                                id="disable_password"
+                                                class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:border-rose-500 text-slate-100 text-xs transition-colors"
+                                                placeholder="Enter password"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label for="disable_code" class="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Authenticator Code</label>
+                                            <input
+                                                v-model="twoFactorDisableCode"
+                                                type="text"
+                                                id="disable_code"
+                                                class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:border-rose-500 text-slate-100 text-xs text-center font-mono tracking-widest transition-colors"
+                                                placeholder="000000"
+                                                maxlength="6"
+                                            />
+                                        </div>
+
+                                        <div class="flex items-center space-x-2 pt-2">
+                                            <button
+                                                type="button"
+                                                @click="disableTwoFactor"
+                                                :disabled="isDisabling2fa"
+                                                class="px-4 py-2 text-xs font-semibold bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white rounded-lg transition-all"
+                                            >
+                                                <span v-if="isDisabling2fa">Deactivating...</span>
+                                                <span v-else>Confirm Deactivation</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                @click="showDisableModal = false; twoFactorDisablePassword = ''; twoFactorDisableCode = ''"
+                                                class="px-4 py-2 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-all"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Status Disabled -->
+                                <div v-else class="space-y-4">
+                                    <div class="p-4 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl flex items-start space-x-3">
+                                        <svg class="h-5 w-5 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                        <div>
+                                            <p class="text-xs font-bold">2FA is inactive</p>
+                                            <p class="text-[10px] text-slate-500 mt-0.5">We highly recommend enabling 2FA for production environments.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Initialization Button -->
+                                    <div v-if="!twoFactorSetupData">
+                                        <button
+                                            type="button"
+                                            @click="initTwoFactorSetup"
+                                            :disabled="isGenerating2fa"
+                                            class="px-5 py-3 text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl shadow-lg transition-all"
+                                        >
+                                            <span v-if="isGenerating2fa">Generating Secret...</span>
+                                            <span v-else>Enable 2FA</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Verification & scan setup -->
+                                    <div v-else class="space-y-5 border border-indigo-500/20 p-5 rounded-2xl bg-indigo-500/5">
+                                        <p class="text-xs text-indigo-400 font-bold">Verify & Activate 2FA</p>
+                                        
+                                        <div class="flex flex-col sm:flex-row items-center gap-4 bg-slate-950 p-4 border border-slate-800 rounded-xl">
+                                            <img :src="twoFactorSetupData.qr_code" alt="Scan QR Code" class="w-36 h-36 bg-white p-1 rounded-lg flex-shrink-0" />
+                                            <div class="space-y-2 text-center sm:text-left">
+                                                <p class="text-[10px] text-slate-400">Scan this QR code with Google Authenticator or Microsoft Authenticator.</p>
+                                                <p class="text-[10px] text-slate-400">Or type manual secret:</p>
+                                                <code class="px-2 py-1 bg-slate-900 border border-slate-850 rounded text-indigo-400 font-mono text-[10px] select-all tracking-wider block sm:inline-block">
+                                                    {{ twoFactorSetupData.secret }}
+                                                </code>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label for="enable_code" class="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Enter Verification Code</label>
+                                            <input
+                                                v-model="twoFactorCode"
+                                                type="text"
+                                                id="enable_code"
+                                                class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-100 text-center font-mono tracking-widest text-sm transition-colors"
+                                                placeholder="000000"
+                                                maxlength="6"
+                                            />
+                                        </div>
+
+                                        <div class="flex items-center space-x-2 pt-1">
+                                            <button
+                                                type="button"
+                                                @click="confirmEnableTwoFactor"
+                                                :disabled="isEnabling2fa"
+                                                class="px-4 py-2.5 text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg transition-all"
+                                            >
+                                                <span v-if="isEnabling2fa">Activating...</span>
+                                                <span v-else>Confirm & Enable</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                @click="twoFactorSetupData = null; twoFactorCode = ''"
+                                                class="px-4 py-2.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-all"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- SUBMIT CONTROLS -->
                     <div
+                        v-show="activeTab !== 'security'"
                         class="flex items-center justify-end space-x-3 pt-6 border-t border-slate-800"
                     >
                         <button

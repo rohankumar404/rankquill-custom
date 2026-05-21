@@ -257,4 +257,32 @@ class SettingsController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Update admin user password.
+     */
+    public function changePassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        if (! \Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'current_password' => 'The provided password does not match your current password.',
+            ]);
+        }
+
+        $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
+        $user->save();
+
+        activity()
+            ->causedBy($user)
+            ->log('Updated account password.');
+
+        return redirect()->back()->with('success', 'Password updated successfully.');
+    }
 }

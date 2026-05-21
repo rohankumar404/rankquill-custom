@@ -6,6 +6,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use Illuminate\Support\Facades\Auth;
+
 class AdminAuthenticate
 {
     /**
@@ -13,13 +15,18 @@ class AdminAuthenticate
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Restrict to authenticated users with the Spatie 'admin' role
-        if (! $request->user() || ! $request->user()->hasRole('admin')) {
-            // Bypass during early local development scaffold phase if no users exist
-            if (config('app.env') === 'local') {
-                return $next($request);
-            }
+        // Bypass if no users exist in the database (fresh setup safety mechanism)
+        if (\App\Models\User::count() === 0) {
+            return $next($request);
+        }
 
+        // Redirect to login if not authenticated
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        // Restrict to authenticated users with the Spatie 'admin' role
+        if (! $request->user()->hasRole('admin')) {
             abort(403, 'Unauthorized access. You must be an administrator to view this page.');
         }
 

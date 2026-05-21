@@ -54,10 +54,10 @@ Route::get('/portfolio/{slug}', [PublicPortfolioController::class, 'show'])->nam
 // Lead Capture System
 use App\Http\Controllers\PublicInquiryController;
 
-Route::post('/contact', [PublicInquiryController::class, 'store'])->name('contact.store');
+Route::post('/contact', [PublicInquiryController::class, 'store'])->middleware('throttle:contact')->name('contact.store');
 
 // Public Newsletter System
 use App\Http\Controllers\PublicNewsletterController;
 
-Route::post('/newsletter/subscribe', [PublicNewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::post('/newsletter/subscribe', [PublicNewsletterController::class, 'subscribe'])->middleware('throttle:newsletter')->name('newsletter.subscribe');
 Route::get('/newsletter/unsubscribe', [PublicNewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');

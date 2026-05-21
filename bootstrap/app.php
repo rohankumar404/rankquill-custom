@@ -25,6 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             SeoMiddleware::class,
             \App\Http\Middleware\CacheControlMiddleware::class,
+            \App\Http\Middleware\XssProtection::class,
+            \Bepsvpt\SecureHeaders\SecureHeadersMiddleware::class,
         ]);
 
         $middleware->alias([
