@@ -147,14 +147,14 @@ const sliderVal = ref(50)
           <!-- Slider Comparison Container -->
           <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden select-none border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900">
             <!-- After Image -->
-            <img :src="portfolio.after_image_path" alt="After Version" class="absolute inset-0 w-full h-full object-cover" />
+            <img :src="portfolio.after_image_path" alt="After Version" width="380" height="285" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
             
             <!-- Before Image (Clipped) -->
             <div 
               class="absolute inset-0 overflow-hidden" 
               :style="{ width: sliderVal + '%' }"
             >
-              <img :src="portfolio.before_image_path" alt="Before Version" class="absolute inset-0 w-[380px] h-[285px] max-w-none object-cover" />
+              <img :src="portfolio.before_image_path" alt="Before Version" width="380" height="285" loading="lazy" class="absolute inset-0 w-[380px] h-[285px] max-w-none object-cover" />
             </div>
 
             <!-- Handle slider line -->
@@ -189,7 +189,7 @@ const sliderVal = ref(50)
           <h3 class="text-lg font-bold text-slate-950 dark:text-white tracking-tight border-b border-slate-200 dark:border-slate-900 pb-3">Project Gallery</h3>
           <div class="grid grid-cols-2 gap-3">
             <div v-for="(img, idx) in portfolio.gallery" :key="idx" class="group relative aspect-[4/3] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
-              <img :src="img" alt="Gallery item" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
+              <img :src="img" alt="Gallery item" width="160" height="120" loading="lazy" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
             </div>
           </div>
         </div>

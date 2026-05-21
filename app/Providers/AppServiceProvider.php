@@ -41,5 +41,22 @@ class AppServiceProvider extends ServiceProvider
         } catch (\Throwable $e) {
             // Silence exceptions if DB is not migrated or setup yet
         }
+
+        // Register model hooks for clearing cache
+        try {
+            \App\Models\Service::saved(fn () => \Illuminate\Support\Facades\Cache::forget('homepage_services'));
+            \App\Models\Service::deleted(fn () => \Illuminate\Support\Facades\Cache::forget('homepage_services'));
+            
+            \App\Models\Portfolio::saved(fn () => \Illuminate\Support\Facades\Cache::forget('homepage_portfolios'));
+            \App\Models\Portfolio::deleted(fn () => \Illuminate\Support\Facades\Cache::forget('homepage_portfolios'));
+            
+            \App\Models\Testimonial::saved(fn () => \Illuminate\Support\Facades\Cache::forget('homepage_testimonials'));
+            \App\Models\Testimonial::deleted(fn () => \Illuminate\Support\Facades\Cache::forget('homepage_testimonials'));
+            
+            \App\Models\Blog::saved(fn () => \Illuminate\Support\Facades\Cache::forget('homepage_blogs'));
+            \App\Models\Blog::deleted(fn () => \Illuminate\Support\Facades\Cache::forget('homepage_blogs'));
+        } catch (\Throwable $e) {
+            // Silence exceptions if DB is not migrated or setup yet
+        }
     }
 }

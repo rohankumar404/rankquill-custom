@@ -3,6 +3,7 @@ import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
+import { compression } from 'vite-plugin-compression2';
 
 export default defineConfig({
     plugins: [
@@ -17,6 +18,14 @@ export default defineConfig({
         }),
         vue(),
         tailwindcss(),
+        compression({
+            algorithm: 'brotliCompress',
+            exclude: [/\.(map)$/, /\.(txt)$/],
+        }),
+        compression({
+            algorithm: 'gzip',
+            exclude: [/\.(map)$/, /\.(txt)$/],
+        }),
     ],
     server: {
         watch: {

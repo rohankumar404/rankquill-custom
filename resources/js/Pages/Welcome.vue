@@ -401,7 +401,7 @@ const handleSubscribe = async () => {
 
             <div class="flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-900/40 mt-6">
               <div v-if="t.avatar_path" class="w-10 h-10 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800">
-                <img :src="t.avatar_path" alt="Avatar" class="object-cover w-full h-full" />
+                <img :src="t.avatar_path" alt="Avatar" width="40" height="40" loading="lazy" class="object-cover w-full h-full" />
               </div>
               <div v-else class="w-10 h-10 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold flex items-center justify-center text-xs">
                 {{ t.client_name.charAt(0) }}

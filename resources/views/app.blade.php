@@ -6,6 +6,10 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- DNS Prefetching -->
+        <link rel="dns-prefetch" href="//fonts.bunny.net">
+        <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+
         <!-- Scripts -->
         @vite(['resources/js/app.js', 'resources/css/app.css'])
         @inertiaHead

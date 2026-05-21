@@ -71,7 +71,7 @@ const schemaJson = props.service.seo?.schema_markup
             </div>
           </div>
           <div v-if="section.data.image" class="relative">
-            <img :src="section.data.image" alt="Section Media" class="rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl object-cover w-full aspect-video" />
+            <img :src="section.data.image" alt="Section Media" width="600" height="338" loading="lazy" class="rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl object-cover w-full aspect-video" />
           </div>
         </section>
 
@@ -129,7 +129,7 @@ const schemaJson = props.service.seo?.schema_markup
           <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
             <div v-for="m in section.data.resolved_items" :key="m.id" class="text-center">
               <div class="w-20 h-20 rounded-full mx-auto overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 mb-3">
-                <img v-if="m.avatar_path" :src="m.avatar_path" alt="Avatar" class="object-cover w-full h-full" />
+                <img v-if="m.avatar_path" :src="m.avatar_path" alt="Avatar" width="80" height="80" loading="lazy" class="object-cover w-full h-full" />
               </div>
               <h4 class="font-bold text-sm text-slate-950 dark:text-white">{{ m.name }}</h4>
               <p class="text-xs text-indigo-650 dark:text-indigo-400">{{ m.position }}</p>

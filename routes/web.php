@@ -13,10 +13,18 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
-        'services' => Service::active()->orderBy('id')->take(6)->get(),
-        'portfolios' => Portfolio::published()->with('categories')->latest()->take(3)->get(),
-        'testimonials' => Testimonial::latest()->take(6)->get(),
-        'blogs' => Blog::published()->with('category')->latest()->take(3)->get(),
+        'services' => \Illuminate\Support\Facades\Cache::remember('homepage_services', 86400, function () {
+            return Service::active()->orderBy('id')->take(6)->get();
+        }),
+        'portfolios' => \Illuminate\Support\Facades\Cache::remember('homepage_portfolios', 86400, function () {
+            return Portfolio::published()->with('categories')->latest()->take(3)->get();
+        }),
+        'testimonials' => \Illuminate\Support\Facades\Cache::remember('homepage_testimonials', 86400, function () {
+            return Testimonial::latest()->take(6)->get();
+        }),
+        'blogs' => \Illuminate\Support\Facades\Cache::remember('homepage_blogs', 86400, function () {
+            return Blog::published()->with('category')->latest()->take(3)->get();
+        }),
     ]);
 });
 
