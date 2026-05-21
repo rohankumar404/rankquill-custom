@@ -5,9 +5,10 @@ use App\Http\Controllers\PublicBlogController;
 use App\Http\Controllers\RssFeedController;
 use App\Http\Controllers\SeoController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Welcome');
 });
 
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap']);
