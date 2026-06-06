@@ -42,15 +42,15 @@ class AppServiceProvider extends ServiceProvider
         try {
             if (Schema::hasTable('smtp_settings')) {
                 $smtp = smtp_setting();
-                if ($smtp && $smtp->is_active) {
+                if ($smtp && ($smtp['is_active'] ?? false)) {
                     config([
-                        'mail.mailers.smtp.host' => $smtp->host,
-                        'mail.mailers.smtp.port' => $smtp->port,
-                        'mail.mailers.smtp.username' => $smtp->username,
-                        'mail.mailers.smtp.password' => $smtp->password,
-                        'mail.mailers.smtp.encryption' => $smtp->encryption,
-                        'mail.from.address' => $smtp->from_address,
-                        'mail.from.name' => $smtp->from_name,
+                        'mail.mailers.smtp.host' => $smtp['host'] ?? '',
+                        'mail.mailers.smtp.port' => $smtp['port'] ?? 587,
+                        'mail.mailers.smtp.username' => $smtp['username'] ?? '',
+                        'mail.mailers.smtp.password' => $smtp['password'] ?? '',
+                        'mail.mailers.smtp.encryption' => $smtp['encryption'] ?? 'tls',
+                        'mail.from.address' => $smtp['from_address'] ?? '',
+                        'mail.from.name' => $smtp['from_name'] ?? '',
                     ]);
                 }
             }

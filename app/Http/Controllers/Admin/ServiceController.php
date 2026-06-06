@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Models\Faq;
+use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -29,7 +31,10 @@ class ServiceController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Admin/Services/CreateEdit');
+        return Inertia::render('Admin/Services/CreateEdit', [
+            'faqs' => Faq::orderBy('order')->get(['id', 'question']),
+            'testimonials' => Testimonial::latest()->get(['id', 'client_name', 'client_company']),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -94,6 +99,8 @@ class ServiceController extends Controller
 
         return Inertia::render('Admin/Services/CreateEdit', [
             'service' => $service,
+            'faqs' => Faq::orderBy('order')->get(['id', 'question']),
+            'testimonials' => Testimonial::latest()->get(['id', 'client_name', 'client_company']),
         ]);
     }
 

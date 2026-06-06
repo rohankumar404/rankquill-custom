@@ -11,6 +11,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
 
         <!-- Scripts -->
+        @routes
         @vite(['resources/js/app.js', 'resources/css/app.css'])
         @inertiaHead
     </head>

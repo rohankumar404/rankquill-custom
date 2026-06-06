@@ -3,41 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faq;
-use App\Models\Service;
+use App\Models\Page;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class PublicServiceController extends Controller
+class PublicPageController extends Controller
 {
     /**
-     * Display a listing of active services.
-     */
-    public function index(Request $request): Response
-    {
-        $services = Service::active()
-            ->latest()
-            ->paginate(12);
-
-        return Inertia::render('Public/Services/Index', [
-            'services' => $services,
-        ]);
-    }
-
-    /**
-     * Display a single service details.
+     * Display a published CMS page by slug.
      */
     public function show(string $slug): Response
     {
-        $service = Service::with(['seo', 'faqs', 'testimonials'])
-            ->active()
-            ->where('slug', $slug)
-            ->firstOrFail();
+        $page = Page::published()->where('slug', $slug)->firstOrFail();
 
-        // Hydrate block contents dynamically
-        $content = $service->content ?? [];
+        // Hydrate the dynamic sections referencing other models
+        $content = $page->content ?? [];
         $hydratedContent = [];
 
         foreach ($content as $section) {
@@ -64,15 +47,13 @@ class PublicServiceController extends Controller
             ];
         }
 
-        $service->setAttribute('content', $hydratedContent);
+        // Set hydrated content dynamically in-memory
+        $page->setAttribute('content', $hydratedContent);
+        $page->load('seo');
 
-        // Use dedicated premium landing page for SEO Optimization
-        $view = $slug === 'seo-optimization'
-            ? 'Public/Services/SeoLanding'
-            : 'Public/Services/Show';
-
-        return Inertia::render($view, [
-            'service' => $service,
+        return Inertia::render('Public/PageShow', [
+            'page' => $page,
+            'isPreview' => false,
         ]);
     }
 }

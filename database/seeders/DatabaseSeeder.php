@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             SettingsSeeder::class,
             ServicesSeeder::class,
             PortfoliosSeeder::class,
+            PagesSeeder::class,
         ]);
     }
 }

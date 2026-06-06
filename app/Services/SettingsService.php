@@ -110,10 +110,11 @@ class SettingsService
     /**
      * Get the active SMTP settings.
      */
-    public function getSmtp(): ?SmtpSetting
+    public function getSmtp(): ?array
     {
         return Cache::rememberForever('settings:smtp', function () {
-            return SmtpSetting::where('is_active', true)->first() ?? SmtpSetting::first();
+            $smtp = SmtpSetting::where('is_active', true)->first() ?? SmtpSetting::first();
+            return $smtp ? $smtp->toArray() : null;
         });
     }
 
@@ -141,12 +142,13 @@ class SettingsService
             return Cache::rememberForever("settings:scripts:{$placement}", function () use ($placement) {
                 return Script::where('placement', $placement)
                     ->where('is_active', true)
-                    ->get();
+                    ->get()
+                    ->toArray();
             });
         }
 
         return Cache::rememberForever('settings:scripts', function () {
-            return Script::where('is_active', true)->get();
+            return Script::where('is_active', true)->get()->toArray();
         });
     }
 
@@ -158,7 +160,8 @@ class SettingsService
         return Cache::rememberForever('settings:social_links', function () {
             return SocialLink::where('is_active', true)
                 ->orderBy('order')
-                ->get();
+                ->get()
+                ->toArray();
         });
     }
 

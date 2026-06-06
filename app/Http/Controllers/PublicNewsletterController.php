@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\NewsletterSubscriber;
 use App\Services\NewsletterService;
+use Illuminate\Support\Str;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -42,6 +43,7 @@ class PublicNewsletterController extends Controller
             // Resubscribe existing contact
             $subscriber->update([
                 'status' => 'active',
+                'token' => $subscriber->token ?? Str::random(32),
                 'subscribed_at' => now(),
                 'unsubscribed_at' => null,
             ]);
@@ -49,13 +51,18 @@ class PublicNewsletterController extends Controller
             // Create new subscriber
             $subscriber = NewsletterSubscriber::create([
                 'email' => $request->email,
+                'token' => Str::random(32),
                 'status' => 'active',
                 'subscribed_at' => now(),
             ]);
         }
 
         // Sync with integrations (Mailchimp/Brevo)
-        $this->newsletterService->sync($subscriber, false);
+        try {
+            $this->newsletterService->sync($subscriber, false);
+        } catch (\Exception $e) {
+            report($e); // Log the error but don't crash the UI
+        }
 
         return response()->json([
             'success' => true,
@@ -93,7 +100,11 @@ class PublicNewsletterController extends Controller
             ]);
 
             // Sync unsubscribe to integrations
-            $this->newsletterService->sync($subscriber, true);
+            try {
+                $this->newsletterService->sync($subscriber, true);
+            } catch (\Exception $e) {
+                report($e);
+            }
         }
 
         return Inertia::render('Public/Newsletter/Unsubscribe', [

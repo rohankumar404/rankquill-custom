@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+/* =====================================================
+   RANKQUILL PREMIUM DESIGN SYSTEM
+   ===================================================== */
+
+/* Dark mode via .dark class on <html> */
+@variant dark (&:where(.dark, .dark *));
+
+/* Font Sources */
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -7,6 +15,277 @@
 @source '../**/*.vue';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* =====================================================
+   GOOGLE FONTS IMPORT
+   ===================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* =====================================================
+   CUSTOM SCROLLBAR
+   ===================================================== */
+:root {
+  --brand-indigo: #6366f1;
+  --brand-purple: #8b5cf6;
+  --brand-pink: #ec4899;
+}
+
+* { scrollbar-width: thin; scrollbar-color: #334155 #0f172a; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+
+html { scroll-behavior: smooth; }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* =====================================================
+   ANIMATIONS
+   ===================================================== */
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-12px) rotate(1deg); } }
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+@keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-marquee { animation: marquee 25s linear infinite; }
+.animate-marquee:hover { animation-play-state: paused; }
+.animate-fade-up { animation: fadeUp 0.6s ease-out both; }
+.animate-scale-in { animation: scaleIn 0.4s ease-out both; }
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+
+/* =====================================================
+   GRADIENT UTILITIES
+   ===================================================== */
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-animated {
+  background: linear-gradient(270deg, #6366f1, #8b5cf6, #ec4899, #6366f1);
+  background-size: 300% 300%;
+  animation: gradientShift 4s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* =====================================================
+   GLASS MORPHISM
+   ===================================================== */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* =====================================================
+   GLOW EFFECTS
+   ===================================================== */
+.glow-indigo { box-shadow: 0 0 60px -10px rgba(99, 102, 241, 0.4); }
+.glow-purple { box-shadow: 0 0 60px -10px rgba(139, 92, 246, 0.4); }
+.glow-pink { box-shadow: 0 0 60px -10px rgba(236, 72, 153, 0.4); }
+.glow-soft { box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.15); }
+
+/* =====================================================
+   MESH GRADIENT BACKGROUND
+   ===================================================== */
+.mesh-gradient {
+  background-color: #070b14;
+  background-image:
+    radial-gradient(at 20% 50%, rgba(99, 102, 241, 0.07) 0%, transparent 60%),
+    radial-gradient(at 80% 20%, rgba(139, 92, 246, 0.07) 0%, transparent 60%),
+    radial-gradient(at 50% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 60%);
+}
+
+.mesh-gradient-light {
+  background-color: #f8fafc;
+  background-image:
+    radial-gradient(at 20% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
+    radial-gradient(at 80% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 60%);
+}
+
+/* =====================================================
+   PREMIUM BUTTON SYSTEM
+   ===================================================== */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full;
+  @apply bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold;
+  @apply transition-all duration-300 shadow-lg shadow-indigo-600/25;
+  @apply hover:shadow-indigo-600/40 hover:scale-[1.02] active:scale-[0.98];
+  @apply focus:outline-none focus:ring-4 focus:ring-indigo-500/20;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full;
+  @apply bg-white/10 hover:bg-white/20 dark:bg-slate-800 dark:hover:bg-slate-700;
+  @apply text-slate-800 dark:text-slate-100 text-sm font-semibold;
+  @apply border border-slate-200/80 dark:border-slate-700;
+  @apply transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
+}
+
+.btn-outline {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full;
+  @apply border border-indigo-500/40 text-indigo-600 dark:text-indigo-400;
+  @apply hover:border-indigo-500 hover:bg-indigo-500/10 text-sm font-semibold;
+  @apply transition-all duration-300;
+}
+
+/* =====================================================
+   ADMIN COMPONENTS
+   ===================================================== */
+.admin-card {
+  @apply bg-slate-900 border border-slate-800/80 rounded-2xl p-6;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.admin-input {
+  @apply w-full px-4 py-2.5 rounded-xl bg-slate-950/80 border border-slate-800;
+  @apply text-slate-200 text-sm placeholder-slate-600;
+  @apply focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20;
+  @apply transition-all duration-200;
+}
+
+.admin-label {
+  @apply block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5;
+}
+
+.admin-btn {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 focus:outline-none;
+}
+
+.admin-btn-primary {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 focus:outline-none bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20;
+}
+
+.admin-btn-danger {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 focus:outline-none bg-rose-600 hover:bg-rose-500 text-white;
+}
+
+.admin-btn-ghost {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 focus:outline-none text-slate-400 hover:text-slate-200 hover:bg-slate-800;
+}
+
+/* =====================================================
+   STAT CARD SHIMMER
+   ===================================================== */
+.stat-shimmer {
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.04) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s infinite;
+}
+
+/* =====================================================
+   SECTION LAYOUT HELPERS
+   ===================================================== */
+.section-wrapper {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.section-header {
+  @apply text-center max-w-3xl mx-auto mb-16 space-y-4;
+}
+
+.section-label {
+  @apply inline-block text-xs font-bold tracking-widest text-indigo-600 dark:text-indigo-400 uppercase;
+  @apply bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20;
+  @apply px-3 py-1 rounded-full;
+}
+
+.section-title {
+  @apply text-3xl sm:text-5xl font-extrabold text-slate-950 dark:text-white tracking-tight leading-tight;
+}
+
+.section-subtitle {
+  @apply text-slate-500 dark:text-slate-400 leading-relaxed text-base sm:text-lg;
+}
+
+/* =====================================================
+   FORM INPUTS
+   ===================================================== */
+.form-input {
+  @apply w-full px-4 py-3 rounded-xl border transition-all duration-200 bg-white dark:bg-slate-900;
+  @apply border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100;
+  @apply placeholder-slate-400 dark:placeholder-slate-600;
+  @apply focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10;
+  @apply text-sm;
+}
+
+.form-label {
+  @apply block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5;
+}
+
+/* =====================================================
+   CARD VARIANTS
+   ===================================================== */
+.card-hover {
+  @apply transition-all duration-300 hover:border-indigo-500/30 hover:-translate-y-1;
+  @apply hover:shadow-xl hover:shadow-indigo-500/5;
+}
+
+/* =====================================================
+   READING PROGRESS BAR
+   ===================================================== */
+#reading-progress {
+  position: fixed; top: 0; left: 0; height: 3px; z-index: 9999;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+  transition: width 0.15s ease;
+}
+
+/* =====================================================
+   HERO GRID BACKGROUND PATTERN
+   ===================================================== */
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* =====================================================
+   NOISE TEXTURE OVERLAY
+   ===================================================== */
+.noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.5;
 }

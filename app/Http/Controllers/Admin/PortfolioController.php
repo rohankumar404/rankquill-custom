@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Portfolio;
+use App\Models\Faq;
+use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -34,6 +36,8 @@ class PortfolioController extends Controller
 
         return Inertia::render('Admin/Portfolios/CreateEdit', [
             'categories' => $categories,
+            'faqs' => Faq::orderBy('order')->get(['id', 'question']),
+            'testimonials' => Testimonial::latest()->get(['id', 'client_name', 'client_company']),
         ]);
     }
 
@@ -114,6 +118,8 @@ class PortfolioController extends Controller
         return Inertia::render('Admin/Portfolios/CreateEdit', [
             'portfolio' => $portfolio,
             'categories' => $categories,
+            'faqs' => Faq::orderBy('order')->get(['id', 'question']),
+            'testimonials' => Testimonial::latest()->get(['id', 'client_name', 'client_company']),
         ]);
     }
 

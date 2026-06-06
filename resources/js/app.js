@@ -6,8 +6,9 @@ createInertiaApp({
     title: (title) => title ? `${title} - RankQuill` : 'RankQuill',
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
-        createApp({ render: () => h(App, props) })
-            .use(plugin)
+        const app = createApp({ render: () => h(App, props) });
+        app.config.globalProperties.route = window.route;
+        app.use(plugin)
             .mount(el);
     },
     progress: {

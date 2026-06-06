@@ -17,11 +17,16 @@ use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\PagePreviewController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\TwoFactorController;
 
 Route::get('/dashboard', DashboardController::class)->name('dashboard');
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
 Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 Route::post('/settings/test-smtp', [SettingsController::class, 'testSmtp'])->name('settings.test-smtp');
+Route::post('/settings/2fa/setup', [TwoFactorController::class, 'setup'])->name('settings.2fa.setup');
+Route::post('/settings/2fa/enable', [TwoFactorController::class, 'enable'])->name('settings.2fa.enable');
+Route::post('/settings/2fa/disable', [TwoFactorController::class, 'disable'])->name('settings.2fa.disable');
+Route::post('/settings/change-password', [SettingsController::class, 'changePassword'])->name('settings.change-password');
 Route::get('/activity-logs', ActivityLogController::class)->name('activity-logs');
 
 Route::resource('pages', PageController::class);
