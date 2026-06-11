@@ -66,10 +66,15 @@ class PublicServiceController extends Controller
 
         $service->setAttribute('content', $hydratedContent);
 
-        // Use dedicated premium landing page for SEO Optimization
-        $view = $slug === 'seo-optimization'
-            ? 'Public/Services/SeoLanding'
-            : 'Public/Services/Show';
+        // Use dedicated premium landing pages per service
+        $dedicatedViews = [
+            'seo-optimization' => 'Public/Services/SeoLanding',
+            'web-development'  => 'Public/Services/WebDevelopment',
+            'app-development'  => 'Public/Services/AppDevelopment',
+            'ppc-campaigns'    => 'Public/Services/PpcLanding',
+        ];
+
+        $view = $dedicatedViews[$slug] ?? 'Public/Services/Show';
 
         return Inertia::render($view, [
             'service' => $service,

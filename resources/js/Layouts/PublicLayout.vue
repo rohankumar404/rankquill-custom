@@ -235,7 +235,10 @@ watch(isDark, (val) => {
               <div v-show="isMobileServicesOpen" class="pl-10 mt-1 space-y-1">
                 <Link href="/services" @click="closeMobileMenu" class="block py-2 px-3 text-xs text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900">All Services</Link>
                 <Link href="/services/web-development" @click="closeMobileMenu" class="block py-2 px-3 text-xs text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900">Web Development</Link>
+                <Link href="/services/app-development" @click="closeMobileMenu" class="block py-2 px-3 text-xs text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900">App Development</Link>
                 <Link href="/services/seo-optimization" @click="closeMobileMenu" class="block py-2 px-3 text-xs text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900">SEO Optimization</Link>
+                <Link href="/services/ppc-campaigns" @click="closeMobileMenu" class="block py-2 px-3 text-xs text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900">PPC Campaigns</Link>
+                <Link href="/services/graphic-design" @click="closeMobileMenu" class="block py-2 px-3 text-xs text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900">Graphic Design</Link>
                 <Link href="/services/ai-solutions" @click="closeMobileMenu" class="block py-2 px-3 text-xs text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900">AI Solutions</Link>
               </div>
             </div>
@@ -319,8 +322,10 @@ watch(isDark, (val) => {
             <h4 class="text-xs font-bold uppercase tracking-widest text-slate-300 mb-4">Services</h4>
             <ul class="space-y-3">
               <li><Link href="/services/web-development" class="text-sm hover:text-white transition-colors">Web Development</Link></li>
-              <li><Link href="/services/seo-optimization" class="text-sm hover:text-white transition-colors">SEO Optimization ✨</Link></li>
               <li><Link href="/services/app-development" class="text-sm hover:text-white transition-colors">App Development</Link></li>
+              <li><Link href="/services/seo-optimization" class="text-sm hover:text-white transition-colors">SEO Optimization</Link></li>
+              <li><Link href="/services/ppc-campaigns" class="text-sm hover:text-white transition-colors">PPC Campaigns</Link></li>
+              <li><Link href="/services/graphic-design" class="text-sm hover:text-white transition-colors">Graphic Design</Link></li>
               <li><Link href="/services/ai-solutions" class="text-sm hover:text-white transition-colors">AI Solutions</Link></li>
             </ul>
           </div>
