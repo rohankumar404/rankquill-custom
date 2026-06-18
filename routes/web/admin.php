@@ -47,7 +47,7 @@ Route::resource('inquiries', InquiryController::class)->only(['index', 'update',
 Route::get('/newsletter/export', [NewsletterController::class, 'export'])->name('newsletter.export');
 Route::resource('newsletter', NewsletterController::class)->only(['index', 'destroy']);
 
-// Media Manager routes
+// Media Manager routes.
 Route::get('/media', [MediaController::class, 'index'])->name('media.index');
 Route::post('/media/upload', [MediaController::class, 'upload'])->name('media.upload');
 Route::post('/media/folders', [MediaController::class, 'storeFolder'])->name('media.folders.store');
