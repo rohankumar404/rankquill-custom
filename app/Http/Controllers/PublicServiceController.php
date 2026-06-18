@@ -66,12 +66,12 @@ class PublicServiceController extends Controller
 
         $service->setAttribute('content', $hydratedContent);
 
-        // Use dedicated premium landing pages per service
         $dedicatedViews = [
             'seo-optimization' => 'Public/Services/SeoLanding',
             'web-development'  => 'Public/Services/WebDevelopment',
             'app-development'  => 'Public/Services/AppDevelopment',
             'ppc-campaigns'    => 'Public/Services/PpcLanding',
+            'graphic-design'   => 'Public/Services/GraphicDesign',
         ];
 
         $view = $dedicatedViews[$slug] ?? 'Public/Services/Show';
