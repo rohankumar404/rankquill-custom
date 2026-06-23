@@ -72,6 +72,7 @@ class PublicServiceController extends Controller
             'app-development'  => 'Public/Services/AppDevelopment',
             'ppc-campaigns'    => 'Public/Services/PpcLanding',
             'graphic-design'   => 'Public/Services/GraphicDesign',
+            'ai-solutions'     => 'Public/Services/AiSolutions',
         ];
 
         $view = $dedicatedViews[$slug] ?? 'Public/Services/Show';
